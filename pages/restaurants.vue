@@ -1,13 +1,42 @@
 <template>
-    <main class="container restaurants">
-        <app-restaurant-info/>
+    <main class="container restaurant">
+        <div class="restaurantheading">
+            <h1>Restaurants</h1>
+            <app-select @change="selectedRestaurant = $event"/>
+        </div>
+        <app-restaurant-info :datasource="filteredRestaurants"/>
     </main class="container restaurants">
 </template>
 
 <script>
 import AppRestaurantInfo from '../components/AppRestaurantInfo.vue'
-    export default {
-  components: { AppRestaurantInfo },
+import AppSelect from '../components/AppSelect.vue'
+import { mapState } from 'vuex';
+
+export default {
+    components: { 
+        AppRestaurantInfo, 
+        AppSelect 
+    },
+    data(){
+        return {
+            selectedRestaurant: ''
+        }
+    },
+    computed: {
+        ...mapState([
+            'fooddata',
+        ]),
+        filteredRestaurants(){
+            if(this.selectedRestaurant) {
+                return this.fooddata.filter(el => {
+                    let name = el.name.toLowerCase();
+                    return name.includes(this.selectedRestaurant);
+                })
+            }
+            return this.fooddata;
+        }
+    },
         
     }
 </script>
